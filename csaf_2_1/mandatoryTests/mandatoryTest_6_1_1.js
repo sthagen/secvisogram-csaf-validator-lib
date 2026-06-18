@@ -37,6 +37,7 @@ const vulnerabilitySchema = /** @type {const} */ ({
   optionalProperties: {
     flags: { elements: productIdsSchema },
     first_known_exploitation_dates: { elements: productIdsSchema },
+    ids: { elements: productIdsSchema },
     involvements: { elements: productIdsSchema },
     metrics: { elements: metricSchema },
     notes: { elements: productIdsSchema },
@@ -239,6 +240,11 @@ function collectProductIdRefs(doc) {
         vulnerability,
         entries
       )
+      collectProductRefsInIds(
+        `/vulnerabilities/${vulnerabilityIndex}/ids`,
+        vulnerability,
+        entries
+      )
       collectProductRefsInInvolvements(
         `/vulnerabilities/${vulnerabilityIndex}/involvements`,
         vulnerability,
@@ -415,6 +421,23 @@ const collectProductRefsInFirstKnownExploitationDates = (
       })
     }
   )
+}
+
+/**
+ * @param {string} instancePath
+ * @param {Vulnerability} vulnerability
+ * @param {ProductIdRef[]} entries
+ */
+const collectProductRefsInIds = (instancePath, vulnerability, entries) => {
+  vulnerability.ids?.forEach((id, idIndex) => {
+    const productIds = id.product_ids
+    productIds?.forEach((productId, productIdIndex) => {
+      entries.push({
+        id: productId,
+        instancePath: `${instancePath}/${idIndex}/product_ids/${productIdIndex}`,
+      })
+    })
+  })
 }
 
 /**
