@@ -146,7 +146,8 @@ export const collectGroupIdsFromProductTree = (doc) => {
 }
 
 /**
- * Returns all references that don't have a matching definition by id.
+ * Filters a list of references down to those that have no matching definition.
+ * A reference is considered unresolved if no entry in `entries` shares the same `id`.
  * @param {{id: string}[]} entries
  * @param {{id: string, instancePath: string}[]} refs
  * @returns {{id: string, instancePath: string}[]}
